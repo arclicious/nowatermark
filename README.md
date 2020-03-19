@@ -7,20 +7,25 @@
 [![Powered by SixQuant](https://img.shields.io/badge/powered%20by-SixQuant-orange.svg?style=flat&colorA=E1523D&colorB=007D8A)](https://sixquant.cn)
 
 ## Overview
-remove watermark. 
-根据水印模板图片自动寻找并去除图片中对应的水印，利用 Python 和 OpenCV 快速实现。
+Automatically find and remove the corresponding watermark in the picture according to the picture of the watermark template.
 
 
 ## Install
 
 ### Mac OS Install OpenCV for Python3
 
-- with-python3用来告诉homebrew用来让opencv支持python3，
-- C++11 用来告诉homebrew提供c++11支持，
-- with-contrib 用来安装opencv的contrib支持。
+- with-python3 is used to tell brew to make opencv support python3,
+- C ++ 11 is used to tell brew to provide c ++ 11 support,
+- with-contrib is used to install opencv's contrib support.
 
 ```bash
 $ brew install opencv3 --without-python --with-python3 --c++11 --with-contrib  
+```
+
+### Windows & Linux Installation
+
+```bash
+pip3 install opencv-python
 ```
 
 Verifying the installation：
@@ -35,7 +40,7 @@ If you got this error: "ImportError: No module named 'cv2'", then your symlink m
 $ brew link --force opencv3
 ```
 
-### Install nowatermark
+### Install nowatermark (universal across all platforms)
 ```bash
 $ pip3 install nowatermark
 ```
@@ -68,29 +73,13 @@ remover.remove_watermark(path + 'anjuke4.jpg', path + 'anjuke4-result.jpg')
 
 ## Procedure
 
-### Feature Matching(特征匹配)
-* 对水印模板图片进行了一些初始化处理，比如二值化后去除非文字部分等
-* 尝试了 OpenCV 的多种算法
-  - 比如 ORB + Brute-Force，即蛮力匹配，对应 cv2.BFMatcher() 方法
-  - 比如 SIFT + FLANN，即快速最近邻匹配，对应 cv2.BFMatcher() 方法
-  - 比如 Template Matching，即模板匹配，对应 cv2.matchTemplate() 方法
-* 最后发现 Template Matching 最简单方便，效果也最好。 
-* 如果水印位置固定的话则可以跳过Feature Matching(特征匹配)，直接进行下一步的Inpainting(图片修复)
-
-### Inpainting(图片修复)
-* 修复图片前需要做一些前置处理
-  - 首先要得到图片的去水印 Mask 图片，即和待处理图片一样大小的除了水印部分的文字部分外其他部分全部是黑色的位图
-  - 因为前面对水印做了二值化等处理，最终效果发现会有水印轮廓，所以需要对 Mask 图片做一次膨胀处理覆盖掉轮廓
-* 选用了Telea在2004年提出的Telea算法，即基于快速行进（FMM）的修复算法
-  - 对应 cv2.inpaint(img, mask, 5, cv2.INPAINT_TELEA)
-  - 对应论文：[An Image Inpainting Technique Based on the Fast Marching Method (2004)](http://www.cs.rug.nl/~alext/PAPERS/JGT04/paper.pdf)
-
-## Todo
-
-* 由于某些图片的水印和背景图片相似程度太高，如何提高水印位置的识别正确率
-* 改进修复图片算法，可以考虑用深度学习来做做看？
-* Google CVPR 2017, [《On the Effectiveness of Visible Watermarks》](https://watermark-cvpr17.github.io)这个据说很牛的，回头可以读一读
-
-## License
+### Feature Matching
+* Initialized the watermark template image, such as removing non-text parts after binarization, etc.
+* Tried multiple algorithms of OpenCV
+* For example ORB + Brute-Force, that is brute force matching, corresponding to the cv2.BFMatcher () method
+* For example, SIFT + FLANN, namely fast nearest neighbor matching, corresponding to the cv2.BFMatcher () method
+* For example, Template Matching, that is, template matching, corresponding to cv2.matchTemplate ()
+* In the end, Template Matching was the easiest and most convenient.
+* If the watermark position is fixed, you can skip Feature Matching and go directly to the next Inpainting (picture repair)
 
 [MIT](https://tldrlegal.com/license/mit-license)
